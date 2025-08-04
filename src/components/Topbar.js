@@ -1,6 +1,12 @@
+'use client';
+
 import Image from 'next/image';
+import MyKisahApiModal from './modal/api-key-modal';
+import { useState } from 'react';
 
 export default function Topbar({ onToggleSidebar }) {
+  const [open, setOpen] = useState(false);
+
   return (
     <nav className='border-b border-gray-300 px-6 py-4 flex items-center justify-between'>
       <div className='flex items-center gap-8'>
@@ -29,15 +35,16 @@ export default function Topbar({ onToggleSidebar }) {
             height={36}
           />
         </div>
-        <div className='flex items-center'>
+        <button className='flex items-center' onClick={() => setOpen(true)}>
           <Image
             src='/icon/profile.svg'
-            alt='Question Icon'
+            alt='Profile Icon'
             width={36}
             height={36}
           />
-        </div>
+        </button>
       </div>
+      <MyKisahApiModal onClose={() => setOpen(false)} open={open} />
     </nav>
   );
 }
