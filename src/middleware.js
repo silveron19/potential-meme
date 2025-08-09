@@ -2,7 +2,6 @@ import { createServerClient } from '@supabase/ssr';
 import { NextResponse } from 'next/server';
 
 export async function middleware(request) {
-  // Base response where Supabase will set refreshed cookies
   const response = NextResponse.next();
 
   const supabase = createServerClient(
@@ -25,35 +24,20 @@ export async function middleware(request) {
     error,
   } = await supabase.auth.getUser();
 
-  // Helper: forward any cookies set on `response` to another response (e.g., redirect)
-  const forwardCookies = (target) => {
-    response.cookies.getAll().forEach((cookie) => {
-      // Copy cookie options if present
-      target.cookies.set(cookie.name, cookie.value, cookie);
-    });
-    return target;
-  };
-
   // Redirect jika user sudah login tapi akses /login
   if (request.nextUrl.pathname === '/login' && user) {
-    const redirectRes = NextResponse.redirect(
-      new URL('/cari-video', request.url)
-    );
-    return forwardCookies(redirectRes);
+    return NextResponse.redirect(new URL('/cari-video', request.url));
   }
 
   // Halaman yang butuh autentikasi
-  const protectedRoutes = ['/cari-video', '/video-kamu'];
-  const isProtected = protectedRoutes.some((route) =>
-    request.nextUrl.pathname.startsWith(route)
-  );
+  // const protectedRoutes = ['/cari-video', '/video-kamu'];
+  // const isProtected = protectedRoutes.some((route) =>
+  //   request.nextUrl.pathname.startsWith(route)
+  // );
 
-  if (isProtected && !user) {
-    const redirectRes = NextResponse.redirect(
-      new URL('/privacy-policy', request.url)
-    );
-    return forwardCookies(redirectRes);
-  }
+  // if (isProtected && !user) {
+  //   return NextResponse.redirect(new URL('/privacy-policy', request.url));
+  // }
 
   return response;
 }
@@ -69,4 +53,5 @@ export const config = {
      */
     '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
+  runtime: 'experimental-edge',
 };
