@@ -15,6 +15,7 @@ export async function signInWithGoogle() {
     url = url.startsWith('http') ? url : `https://${url}`;
     // Make sure to include a trailing `/`.
     url = url.endsWith('/') ? url : `${url}/`;
+    console.log(url);
     return url;
   };
 
