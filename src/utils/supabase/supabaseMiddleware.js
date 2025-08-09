@@ -2,18 +2,27 @@ import { createServerClient } from '@supabase/ssr';
 import { NextResponse } from 'next/server';
 
 export async function updateSession(request) {
-  const response = NextResponse.next();
-
+  let supabaseResponse = NextResponse.next({
+    request,
+  });
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
       cookies: {
-        getAll: () => request.cookies.getAll(),
-        setAll: (cookiesToSet) => {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            response.cookies.set(name, value, options);
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            request.cookies.set(name, value)
+          );
+          supabaseResponse = NextResponse.next({
+            request,
           });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options)
+          );
         },
       },
     }
@@ -21,7 +30,6 @@ export async function updateSession(request) {
 
   const {
     data: { user },
-    error,
   } = await supabase.auth.getUser();
 
   // Redirect jika user sudah login tapi akses /login
@@ -36,8 +44,8 @@ export async function updateSession(request) {
   );
 
   if (isProtected && !user) {
-    return NextResponse.redirect(new URL('/privacy-policy', request.url));
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  return response;
+  return supabaseResponse;
 }

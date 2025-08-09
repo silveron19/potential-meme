@@ -1,47 +1,7 @@
-import { createServerClient } from '@supabase/ssr';
-import { NextResponse } from 'next/server';
+import { updateSession } from './utils/supabase/supabaseMiddleware';
 
 export async function middleware(request) {
-  const response = NextResponse.next();
-
-  const supabase = await createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    {
-      cookies: {
-        getAll: () => request.cookies.getAll(),
-        setAll: (cookiesToSet) => {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            response.cookies.set(name, value, options);
-          });
-        },
-      },
-    }
-  );
-
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
-
-  console.log(user);
-
-  // Redirect jika user sudah login tapi akses /login
-  if (request.nextUrl.pathname === '/login' && user) {
-    return NextResponse.redirect(new URL('/cari-video', request.url));
-  }
-
-  // Halaman yang butuh autentikasi
-  const protectedRoutes = ['/cari-video', '/video-kamu'];
-  const isProtected = protectedRoutes.some((route) =>
-    request.nextUrl.pathname.startsWith(route)
-  );
-
-  if (isProtected && !user) {
-    return NextResponse.redirect(new URL('/privacy-policy', request.url));
-  }
-
-  return response;
+  return await updateSession(request);
 }
 
 export const config = {
@@ -55,5 +15,4 @@ export const config = {
      */
     '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
-  runtime: 'experimental-edge',
 };
