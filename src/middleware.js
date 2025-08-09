@@ -19,10 +19,15 @@ export async function middleware(request) {
     }
   );
 
-  const { data, error } = await supabase.auth.getUser();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+
+  console.log(user);
 
   // Redirect jika user sudah login tapi akses /login
-  if (request.nextUrl.pathname === '/login' && data) {
+  if (request.nextUrl.pathname === '/login' && user) {
     return NextResponse.redirect(new URL('/cari-video', request.url));
   }
 
@@ -32,7 +37,7 @@ export async function middleware(request) {
     request.nextUrl.pathname.startsWith(route)
   );
 
-  if (isProtected && !data) {
+  if (isProtected && !user) {
     return NextResponse.redirect(new URL('/privacy-policy', request.url));
   }
 
