@@ -36,7 +36,7 @@ export async function updateSession(request) {
   );
 
   if (isProtected && !user) {
-    return NextResponse.redirect(new URL('/login', request.url));
+    return NextResponse.redirect(new URL('/privacy-policy', request.url));
   }
 
   return response;
