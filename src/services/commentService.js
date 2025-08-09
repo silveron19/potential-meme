@@ -1,5 +1,5 @@
 // service example for fetching comments
-import supabase from '../lib/supabaseClient.js';
+import supabase from '../utils/supabase/supabaseClient.js';
 
 export async function fetchComments() {
     const { data, error } = await supabase

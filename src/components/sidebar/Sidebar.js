@@ -21,7 +21,7 @@ export default function Sidebar({ isOpen }) {
 
   return (
     <aside
-      className={`border-r border-gray-200 bg-white
+      className={`sticky top-0 left-0 border-r border-gray-200 bg-white h-full
      ${isOpen ? 'w-64' : 'w-22'} transition-all duration-300`}
     >
       <div className={`flex flex-col px-6 py-6 gap-y-2`}>
@@ -31,7 +31,7 @@ export default function Sidebar({ isOpen }) {
             icon={item.icon}
             text={item.text}
             href={item.href}
-            isActive={pathname === item.href}
+            isActive={pathname.includes(item.href)}
             showText={isOpen}
           />
         ))}
