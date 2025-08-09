@@ -19,25 +19,22 @@ export async function middleware(request) {
     }
   );
 
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
+  const { data, error } = await supabase.auth.getUser();
 
   // Redirect jika user sudah login tapi akses /login
-  if (request.nextUrl.pathname === '/login' && user) {
+  if (request.nextUrl.pathname === '/login' && data) {
     return NextResponse.redirect(new URL('/cari-video', request.url));
   }
 
   // Halaman yang butuh autentikasi
-  // const protectedRoutes = ['/cari-video', '/video-kamu'];
-  // const isProtected = protectedRoutes.some((route) =>
-  //   request.nextUrl.pathname.startsWith(route)
-  // );
+  const protectedRoutes = ['/cari-video', '/video-kamu'];
+  const isProtected = protectedRoutes.some((route) =>
+    request.nextUrl.pathname.startsWith(route)
+  );
 
-  // if (isProtected && !user) {
-  //   return NextResponse.redirect(new URL('/privacy-policy', request.url));
-  // }
+  if (isProtected && !data) {
+    return NextResponse.redirect(new URL('/privacy-policy', request.url));
+  }
 
   return response;
 }
