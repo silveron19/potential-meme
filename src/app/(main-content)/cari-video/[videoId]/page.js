@@ -17,6 +17,7 @@ export default function VideoDetails() {
   const [predictions, setPredictions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCommentIds, setSelectedCommentIds] = useState([]);
+  const hasPredictions = predictions && predictions.length > 0;
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -214,85 +215,83 @@ export default function VideoDetails() {
             />
           </CustomButton>
 
-          {/* Tombol hanya untuk moderator dan owner */}
-          {['moderator', 'owner'].includes(userData.role) && (
+          {/* Tombol hanya muncul kalau sudah ada hasil prediksi */}
+          {hasPredictions && (
             <>
-              <CustomButton
-                text={'Daftar Situs Judi'}
-                style={{
-                  gap: '0.2rem',
-                }}
-                variant='outline'
-              >
-                <Image
-                  src='/icon/gambling.svg'
-                  alt='Gambling Icon'
-                  width={18}
-                  height={18}
-                />
-              </CustomButton>
+              {/* Tombol hanya untuk moderator dan owner */}
+              {['moderator', 'owner'].includes(userData.role) && (
+                <>
+                  <CustomButton
+                    text={'Daftar Situs Judi'}
+                    style={{ gap: '0.2rem' }}
+                    variant='outline'
+                  >
+                    <Image
+                      src='/icon/gambling.svg'
+                      alt='Gambling Icon'
+                      width={18}
+                      height={18}
+                    />
+                  </CustomButton>
 
+                  <CustomButton
+                    text={'Hapus Komentar'}
+                    borderColor='border-(--primary)'
+                    textColor='text-(--primary)'
+                    style={{ gap: '0.2rem' }}
+                    variant='outline'
+                    onClick={handleDeleteComments}
+                    disabled={!selectedCommentIds.length}
+                  >
+                    <Image
+                      src='/icon/trash-red.svg'
+                      alt='Trash Icon'
+                      width={18}
+                      height={18}
+                    />
+                  </CustomButton>
+                </>
+              )}
+
+              {/* Tombol hanya untuk owner */}
+              {userData.role === 'owner' && (
+                <CustomButton
+                  text={'Ban User dari Channel'}
+                  borderColor='border-(--primary)'
+                  textColor='text-(--primary)'
+                  style={{ gap: '0.2rem' }}
+                  variant='outline'
+                  onClick={handleBanUsers}
+                  disabled={!selectedCommentIds.length}
+                >
+                  <Image
+                    src='/icon/ban.svg'
+                    alt='Ban Icon'
+                    width={18}
+                    height={18}
+                  />
+                </CustomButton>
+              )}
+
+              {/* Tombol Laporkan Komentar - semua role */}
               <CustomButton
-                text={'Hapus Komentar'}
-                borderColor='border-(--primary)'
-                textColor='text-(--primary)'
-                style={{
-                  gap: '0.2rem',
-                }}
+                text={'Laporkan Komentar'}
+                borderColor='border-(--orange)'
+                textColor='text-(--orange)'
+                style={{ gap: '0.2rem' }}
                 variant='outline'
-                onClick={handleDeleteComments}
+                onClick={handleReportComments}
                 disabled={!selectedCommentIds.length}
               >
                 <Image
-                  src='/icon/trash-red.svg'
-                  alt='Trash Icon'
+                  src='/icon/warning.svg'
+                  alt='Warning Icon'
                   width={18}
                   height={18}
                 />
               </CustomButton>
             </>
           )}
-
-          {/* Tombol hanya untuk owner */}
-          {userData.role === 'owner' && (
-            <CustomButton
-              text={'Ban User dari Channel'}
-              borderColor='border-(--primary)'
-              textColor='text-(--primary)'
-              style={{
-                gap: '0.2rem',
-              }}
-              variant='outline'
-              onClick={handleBanUsers}
-              disabled={!selectedCommentIds.length}
-            >
-              <Image
-                src='/icon/ban.svg'
-                alt='Ban Icon'
-                width={18}
-                height={18}
-              />
-            </CustomButton>
-          )}
-          {/* Tombol Laporkan Komentar - semua role */}
-          <CustomButton
-            text={'Laporkan Komentar'}
-            borderColor='border-(--orange)'
-            textColor='text-(--orange)'
-            style={{
-              gap: '0.2rem',
-            }}
-            variant='outline'
-            onClick={handleReportComments}
-            disabled={!selectedCommentIds.length}
-          >
-            <Image
-              src='/icon/warning.svg'
-              alt='Warning Icon'
-              width={18}
-              height={18}
-            />
-          </CustomButton>
         </div>
         <CommentThread
           comments={commentData.data}

@@ -26,7 +26,7 @@ export default function CommentThread({
         comment_id: data.comment_id,
         confidence: prediction?.confidence ?? 0,
         prediction: prediction?.prediction ?? 0,
-        reported: data.reported ?? 0,
+        reported: data.reported_count ?? 0,
       };
     });
   }, [dataComments, predictions]);
