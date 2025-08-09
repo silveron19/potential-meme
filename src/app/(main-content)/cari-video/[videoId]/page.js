@@ -24,7 +24,7 @@ export default function VideoDetails() {
       setIsLoading(true);
       try {
         const response = await axios.get(
-          `http://localhost:8000/comment?id=${videoId}`,
+          `${process.env.API_ENDPOINT}/comment?id=${videoId}`,
           {
             withCredentials: true,
           }
@@ -47,7 +47,7 @@ export default function VideoDetails() {
         const providerToken = await getUserAccessToken();
 
         const response = await axios.post(
-          `http://localhost:8000/check-user-role?video_id=${videoId}`,
+          `${process.env.API_ENDPOINT}/check-user-role?video_id=${videoId}`,
           {},
           {
             headers: {
@@ -92,7 +92,7 @@ export default function VideoDetails() {
 
     try {
       const response = await axios.post(
-        'http://localhost:8000/predict',
+        `${process.env.API_ENDPOINT}/predict`,
         {
           data: filteredData,
         },
@@ -115,7 +115,7 @@ export default function VideoDetails() {
     try {
       const providerToken = await getUserAccessToken();
       await axios.post(
-        `http://localhost:8000/comments/delete`,
+        `${process.env.API_ENDPOINT}/comments/delete`,
         { comment_ids: selectedCommentIds },
         {
           headers: { Authorization: `Bearer ${providerToken}` },
@@ -135,7 +135,7 @@ export default function VideoDetails() {
     try {
       const providerToken = await getUserAccessToken();
       await axios.post(
-        `http://localhost:8000/users/ban`,
+        `${process.env.API_ENDPOINT}/users/ban`,
         { comment_ids: selectedCommentIds },
         {
           headers: { Authorization: `Bearer ${providerToken}` },
@@ -158,7 +158,7 @@ export default function VideoDetails() {
       let userChannelId = localStorage.getItem('userChannelId');
 
       const response = await axios.post(
-        `http://localhost:8000/report-comments`,
+        `${process.env.API_ENDPOINT}/report-comments`,
         { comment_ids: selectedCommentIds, reporter_channel_id: userChannelId },
         {
           headers: { Authorization: `Bearer ${providerToken}` },
