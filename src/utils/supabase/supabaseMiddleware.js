@@ -37,7 +37,7 @@ export async function updateSession(request) {
   }
 
   // Halaman yang butuh autentikasi
-  const protectedRoutes = ['/cari-video', '/video-kamu', '/'];
+  const protectedRoutes = ['/cari-video', '/video-kamu'];
   const isProtected = protectedRoutes.some((route) =>
     request.nextUrl.pathname.startsWith(route)
   );
